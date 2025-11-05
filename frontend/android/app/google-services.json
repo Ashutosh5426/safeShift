@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "465796390087",
+    "project_id": "safeshift-3b6f5",
+    "storage_bucket": "safeshift-3b6f5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465796390087:android:2856e99836584117a472e2",
+        "android_client_info": {
+          "package_name": "com.safeShift.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnMsdnzFmec_ey_-fHqkM6ywXv7VfaHbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
