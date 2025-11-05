@@ -1,0 +1,12 @@
+# Flutter
+build/
+.dart_tool/
+.pub-cache/
+
+# Node.js
+node_modules/
+.env
+
+# macOS
+.DS_Store
+/package-lock.json
