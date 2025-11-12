@@ -1,72 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'feature/authentication/login_page.dart';
+import 'package:frontend/core/app/app_provider.dart';
+import 'package:frontend/core/app/state/app_state.dart';
+import 'package:frontend/core/app/di/injections.dart';
+import 'package:frontend/core/shared_preferences/token_storage.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  await TokenStorage.load();
+  await configureDependencies();
+  runApp(const SafeShiftApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SafeShiftApp extends StatelessWidget {
+  const SafeShiftApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: LoginPage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    print('material_app');
+    return ListenableProvider.value(
+      value: getIt<AppState>(),
+      child: MaterialApp(
+        title: 'SafeShift',
+        debugShowCheckedModeBanner: false,
+        home: ChangeNotifierProvider.value(
+          value: getIt<AppState>(),
+          child: const AppProvider(),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }

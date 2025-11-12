@@ -44,3 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /.metadata
+/lib/core/api/api_service.g.dart
+/lib/feature/authentication/data/models/user_response_model.g.dart
+/lib/core/app/di/injections.config.dart

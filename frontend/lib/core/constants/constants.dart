@@ -1,0 +1,1 @@
+const SHARED_PREFS_ISLOGGEDIN = 'safeShift.isLoggedIn';
