@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/core/constants/colors.dart';
 import 'package:frontend/core/constants/images.dart';
+import 'package:frontend/feature/authentication/bloc/auth_bloc.dart';
+import 'package:frontend/feature/authentication/bloc/auth_event.dart';
+import 'package:frontend/feature/authentication/bloc/auth_state.dart';
+import 'package:frontend/feature/authentication/data/repository/auth_repository.dart';
 import 'package:frontend/feature/common/circular_button.dart';
 
 import 'google_sign_in.dart' show AuthService;
@@ -13,6 +17,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authBloc = AuthBloc(AuthRepository());
     return Scaffold(
       backgroundColor: AppColors.primaryBackgroundColor,
       body: Column(
@@ -20,16 +25,37 @@ class LoginPage extends StatelessWidget {
         children: [
           Image.asset(AppImages.splashImage),
           SizedBox(height: 32),
-          CircularButton(
-            AppIcons.googleIcon,
-            imageType: ImageType.svg,
-            buttonText: AppStrings.signInWithGoogle,
-            onPressed: () async {
-              final user = await AuthService().signInWithGoogle();
-              if (user != null) {
-                print('Successfully signed in: ${user.displayName}');
-              }
-            },
+          BlocProvider(
+            create: (_) => authBloc,
+            child: BlocConsumer<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is Authenticated) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Welcome ${state.user.name}')),
+                  );
+                } else if (state is AuthError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${state.message}')),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is AuthLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is Authenticated) {
+                  return Center(child: Text('Hello ${state.user.name}'));
+                }
+                return CircularButton(
+                  AppIcons.googleIcon,
+                  imageType: ImageType.svg,
+                  buttonText: AppStrings.signInWithGoogle,
+                  onPressed: () async {
+                    context.read<AuthBloc>().add(GoogleSignInRequested());
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
