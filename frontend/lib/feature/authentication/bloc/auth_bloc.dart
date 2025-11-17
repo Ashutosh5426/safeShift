@@ -23,6 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _authRepository.signInWithGoogle(idToken!);
       if (user != null) {
         getIt<AppState>().logIn();
+        getIt<AppState>().setUserPreferences(user);
         emit(Authenticated(user));
       } else {
         emit(AuthError('Failed to sign in'));

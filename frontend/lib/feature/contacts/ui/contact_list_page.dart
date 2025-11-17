@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/app/di/injections.dart';
 import 'package:frontend/core/app/state/app_state.dart';
 import 'package:frontend/core/constants/colors.dart';
+import 'package:frontend/feature/common/common_network_image.dart';
 import 'package:frontend/feature/contacts/bloc/contacts_bloc.dart';
 import 'package:frontend/feature/contacts/bloc/contacts_event.dart';
 import 'package:frontend/feature/contacts/bloc/contacts_state.dart';
@@ -56,6 +57,7 @@ class _ContactListPageState extends State<ContactListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = getIt<AppState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contacts'),
@@ -150,7 +152,7 @@ class _ContactListPageState extends State<ContactListPage> {
             children: [
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
+                  color: AppColors.primaryColor,
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(24),
                   ),
@@ -159,18 +161,21 @@ class _ContactListPageState extends State<ContactListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.person,
-                        size: 36,
-                        color: Colors.black87,
+                      child: ClipOval(
+                        child: CommonNetworkWidget(
+                          imageUrl: appState.profileImage,
+                          width: 60,     // match diameter
+                          height: 60,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'SafeShift User',
+                      appState.username,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -180,7 +185,7 @@ class _ContactListPageState extends State<ContactListPage> {
                       'Stay Safe, Stay Connected',
                       style: Theme.of(
                         context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.white70),
+                      ).textTheme.bodySmall?.copyWith(color: Colors.white),
                     ),
                   ],
                 ),

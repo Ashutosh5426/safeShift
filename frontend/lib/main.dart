@@ -3,14 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:frontend/core/app/app_provider.dart';
 import 'package:frontend/core/app/state/app_state.dart';
 import 'package:frontend/core/app/di/injections.dart';
-import 'package:frontend/core/shared_preferences/token_storage.dart';
+import 'package:frontend/core/shared_preferences/local_storage.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await TokenStorage.load();
+  await LocalStorage.init();
   await configureDependencies();
   runApp(const SafeShiftApp());
 }

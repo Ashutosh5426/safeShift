@@ -6,4 +6,5 @@ class AppIcons {
   const AppIcons._();
 
   static const String googleIcon = 'assets/icons/google_icon.svg';
+  static const String errorPlaceholderImage = 'assets/icons/placeholder.svg';
 }

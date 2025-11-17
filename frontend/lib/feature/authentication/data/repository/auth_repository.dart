@@ -1,5 +1,5 @@
 import 'package:frontend/core/api/api_client.dart';
-import 'package:frontend/core/shared_preferences/token_storage.dart';
+import 'package:frontend/core/shared_preferences/local_storage.dart';
 import 'package:frontend/feature/authentication/data/models/user_response_model.dart';
 
 class AuthRepository {
@@ -15,9 +15,7 @@ class AuthRepository {
         throw Exception('Invalid API response');
       }
 
-      // Save JWT centrally
-      await TokenStorage.setToken(token);
-
+      await LocalStorage.setToken(token);
       return UserResponseModel.fromJson(userJson);
     } catch (e) {
       print(e);
@@ -30,6 +28,6 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
-    await TokenStorage.clear();
+    await LocalStorage.clear();
   }
 }
