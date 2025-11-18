@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/core/app/local_storage/local_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -12,5 +13,6 @@ final getIt = GetIt.instance;
 )
 Future<void> configureDependencies() async {
   await LocalStorage.init();
+  await dotenv.load(fileName: ".env");
   $initGetIt(getIt);
 }

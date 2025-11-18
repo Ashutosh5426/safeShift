@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/core/app/local_storage/local_storage.dart';
 import 'package:frontend/core/constants/constants.dart';
 import 'package:frontend/core/shared_preferences/storage_constants.dart';
 import 'package:frontend/feature/authentication/data/models/user_response_model.dart';
+import 'package:frontend/feature/authentication/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 
 enum LoggedState { loggedOut, loggedIn }
@@ -10,6 +12,9 @@ enum LoggedState { loggedOut, loggedIn }
 @singleton
 class AppState extends ChangeNotifier {
   LoggedState _loggedInState = LoggedState.loggedOut;
+  final String _iosClientId = dotenv.env['IOS_CLIENT_ID'] ?? '';
+  final String _serverClientId = dotenv.env['SERVERS_CLIENT_ID'] ?? '';
+  final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
 
   Future<void> logIn() async {
     _loggedInState = LoggedState.loggedIn;
@@ -36,9 +41,15 @@ class AppState extends ChangeNotifier {
   String get userPhoneNo =>
       LocalStorage.getString(StorageConstants.userPhoneNo) ?? '';
 
+  String get iosClientId => _iosClientId;
+
+  String get serverClientId => _serverClientId;
+
+  String get baseUrl => _baseUrl;
+
   Future<void> logOut() async {
     _loggedInState = LoggedState.loggedOut;
-
+    AuthService.instance.signOut();
     await LocalStorage.clear(whiteList: []);
 
     notifyListeners();

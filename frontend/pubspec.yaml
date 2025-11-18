@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cached_network_image: ^3.4.1
   cupertino_icons: ^1.0.8
+  flutter_dotenv: ^6.0.0
   flutter_svg: ^2.2.2
   shared_preferences: ^2.5.3
   dio: ^5.9.0
@@ -77,6 +78,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/
     - assets/images/
     - assets/icons/

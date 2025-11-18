@@ -19,7 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       GoogleSignInRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final idToken = await AuthService().signInWithGoogle();
+      final idToken = await AuthService.instance.signInWithGoogle();
       final user = await _authRepository.signInWithGoogle(idToken!);
       if (user != null) {
         getIt<AppState>().logIn();

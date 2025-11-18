@@ -20,7 +20,6 @@ class SafeShiftApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('material_app');
     return ListenableProvider.value(
       value: getIt<AppState>(),
       child: MaterialApp(
