@@ -1,37 +1,38 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/core/app/di/injections.dart';
+import 'package:frontend/core/app/state/app_state.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-  /// Use the singleton instance
+  AuthService._();
+  static AuthService get instance => AuthService._();
+
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<String?> signInWithGoogle() async {
     try {
-      /// Initialize Google Sign-In
-      await _googleSignIn.initialize();
-
-      /// Start the authentication flow
-      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
-
-      /// Get authentication tokens
-      final GoogleSignInAuthentication googleAuth =
-      googleUser.authentication;
-
-      /// Create credential - ONLY use idToken in newer versions
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-        /// accessToken is no longer available in GoogleSignInAuthentication
+      await _googleSignIn.initialize(
+        clientId: getIt<AppState>().iosClientId,
+        serverClientId: getIt<AppState>().serverClientId,
       );
 
-      /// Sign in to Firebase
-      final UserCredential userCredential =
+      /// Start the authentication flow
+      final GoogleSignInAccount googleUser =
+      await _googleSignIn.authenticate();
+
+      final googleAuth = googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
       await _auth.signInWithCredential(credential);
 
-      // return userCredential.user;
-      return credential.idToken;
+      return googleAuth.idToken;
+
     } catch (e) {
-      print('Google Sign-In Error: $e');
+      print("Google Sign-In Error: $e");
       return null;
     }
   }

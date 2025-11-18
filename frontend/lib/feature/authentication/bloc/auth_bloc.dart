@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/core/app/state/app_state.dart';
+import 'package:frontend/core/app/di/injections.dart';
 import 'package:frontend/feature/authentication/data/repository/auth_repository.dart';
 import 'package:frontend/feature/authentication/google_sign_in.dart';
 import 'auth_event.dart';
@@ -17,9 +19,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       GoogleSignInRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final idToken = await AuthService().signInWithGoogle();
+      final idToken = await AuthService.instance.signInWithGoogle();
       final user = await _authRepository.signInWithGoogle(idToken!);
       if (user != null) {
+        getIt<AppState>().logIn();
+        getIt<AppState>().setUserPreferences(user);
         emit(Authenticated(user));
       } else {
         emit(AuthError('Failed to sign in'));
