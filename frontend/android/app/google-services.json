@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "465796390087",
+    "project_id": "safeshift-3b6f5",
+    "storage_bucket": "safeshift-3b6f5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465796390087:android:2856e99836584117a472e2",
+        "android_client_info": {
+          "package_name": "com.safeShift.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "465796390087-l8m7gkjbvs50cvfv6magmolfl77b2t3f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.safeShift.app",
+            "certificate_hash": "5f2552e0bb46851341e71b0cc1eab1a036a5f8ac"
+          }
+        },
+        {
+          "client_id": "465796390087-6bkksi5s50kbc0rjsh85rk327aj74nfr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnMsdnzFmec_ey_-fHqkM6ywXv7VfaHbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "465796390087-6bkksi5s50kbc0rjsh85rk327aj74nfr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "465796390087-rdmrt83h1hge8r03llgni3iu4tl09ma0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.safeShift.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
