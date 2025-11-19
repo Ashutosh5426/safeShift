@@ -20,8 +20,13 @@ class LoginPage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(AppImages.splashImage),
-          SizedBox(height: 32),
+          Image.asset(AppIcons.appIcon, width: 280,),
+          Text('SafeShift', style: TextStyle(
+            color: AppColors.primaryColor,
+            fontSize: 50,
+            fontWeight: FontWeight.w800
+          ),),
+          SizedBox(height: 100),
           BlocProvider(
             create: (_) => authBloc,
             child: BlocConsumer<AuthBloc, AuthState>(
@@ -43,13 +48,18 @@ class LoginPage extends StatelessWidget {
                 if (state is Authenticated) {
                   return Center(child: Text('Hello ${state.user.name}'));
                 }
-                return CircularButton(
-                  imagePath: AppIcons.googleIcon,
-                  imageType: ImageType.svg,
-                  buttonText: AppStrings.signInWithGoogle,
-                  onPressed: () async {
-                    context.read<AuthBloc>().add(GoogleSignInRequested());
-                  },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: CircularButton(
+                    width: double.maxFinite,
+                    imagePath: AppIcons.googleIcon,
+                    imageType: ImageType.svg,
+                    buttonText: AppStrings.signInWithGoogle,
+                    textColor: AppColors.primaryColor,
+                    onPressed: () async {
+                      context.read<AuthBloc>().add(GoogleSignInRequested());
+                    },
+                  ),
                 );
               },
             ),
