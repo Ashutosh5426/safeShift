@@ -6,16 +6,22 @@ class CircularButton extends StatefulWidget {
   final String? imagePath;
   final ImageType imageType;
   final String buttonText;
+  final double? width;
+  final double? height;
   final Color textColor;
   final Color buttonColor;
+  final Color borderColor;
   final Future<void> Function()? onPressed;
 
   const CircularButton({
     this.imagePath,
     required this.buttonText,
+    this.width,
+    this.height,
     this.textColor = AppColors.primaryColor,
     this.imageType = ImageType.image,
     this.buttonColor = AppColors.primaryBackgroundColor,
+    this.borderColor = AppColors.primaryColor,
     this.onPressed,
     super.key,
   });
@@ -32,11 +38,13 @@ class _CircularButtonState extends State<CircularButton> {
     return InkWell(
       onTap: _isLoading ? null : _handlePress,
       child: Container(
+        width: widget.width,
+        height: widget.height,
         padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
           color: widget.buttonColor,
-          border: Border.all(color: AppColors.primaryColor),
+          border: Border.all(color: widget.borderColor),
           boxShadow: [
             BoxShadow(
               color: Colors.black12,
