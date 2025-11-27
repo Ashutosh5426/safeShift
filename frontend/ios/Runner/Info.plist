@@ -60,5 +60,11 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>We need your location to ensure your safety</string>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>location</string>
+        </array>
 	</dict>
 </plist>

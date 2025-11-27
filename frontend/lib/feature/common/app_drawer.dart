@@ -5,6 +5,7 @@ import 'package:frontend/core/constants/colors.dart';
 import 'package:frontend/core/routes/app_routes.dart';
 import 'package:frontend/core/routes/navigation_service.dart';
 import 'package:frontend/feature/common/common_network_image.dart';
+import 'package:frontend/feature/safe_model/ui/safe_mode_page.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -78,6 +79,15 @@ class AppDrawer extends StatelessWidget {
               title: const Text('Contacts'),
               onTap: () {
                 NavigationService.pop();
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.safety_check_rounded),
+              title: const Text('Safe Mode'),
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => SafeModePage()));
               },
             ),
 
