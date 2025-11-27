@@ -24,7 +24,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           name: getIt<AppState>().username,
           email: getIt<AppState>().email,
           photo: getIt<AppState>().profileImage,
-          mobileNo: '+91 ${event.phoneNo}',
+          mobileNo: event.phoneNo,
         ),
       );
       if (response != null) {

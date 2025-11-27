@@ -158,7 +158,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           return validateMobile(value);
                         },
                         onChanged: (value) {
-                          if (value?.length == 10) {
+                          if (value == null) {
+                            return;
+                          }
+                          if (value.length >= 10) {
                             _formKey.currentState?.validate();
                           }
                         },
@@ -170,7 +173,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       BlocConsumer<UserProfileBloc, UserProfileState>(
                         listener: (context, state) {
                           if (state is UserProfileSuccess) {
-                            // _toggleEditMode();
+                            _toggleEditMode();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('User info updated')),
                             );
@@ -182,7 +185,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               if (_formKey.currentState?.validate() ?? false) {
                                 context.read<UserProfileBloc>().add(
                                   UpdateProfileEvent(
-                                    phoneNo: _phoneController.text,
+                                    phoneNo:
+                                        _phoneController.text.contains('+91')
+                                        ? _phoneController.text
+                                        : '+91 ${_phoneController.text}',
                                   ),
                                 );
                               }
@@ -235,15 +241,25 @@ String? validateMobile(String? value) {
     return "Mobile number is required";
   }
 
-  /// Remove spaces & +91 if user enters them
-  value = value.replaceAll(" ", "").replaceAll("+91", "");
+  // Remove all non-digit characters
+  String digits = value.replaceAll(RegExp(r'[^0-9]'), '');
 
-  /// Indian mobile number must be 10 digits and start with 6–9
-  final regex = RegExp(r'^[6-9]\d{9}$');
+  /// Remove country code "91" at start
+  if (digits.startsWith('91') && digits.length > 10) {
+    digits = digits.substring(2);
+  }
 
-  if (!regex.hasMatch(value)) {
+  /// After cleaning, must be exactly 10 digits
+  if (digits.length != 10) {
     return "Enter a valid 10-digit mobile number";
   }
 
-  return null; // Valid
+  /// Must start with 6–9
+  final regex = RegExp(r'^[6-9]\d{9}$');
+
+  if (!regex.hasMatch(digits)) {
+    return "Enter a valid 10-digit mobile number";
+  }
+
+  return null;
 }
