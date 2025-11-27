@@ -3,6 +3,8 @@ import 'package:frontend/feature/authentication/data/models/user_response_model.
 import 'package:frontend/feature/contacts/data/models/add_contact_request_model.dart';
 import 'package:frontend/feature/contacts/data/models/contact_response_model.dart';
 import 'package:frontend/feature/contacts/data/models/contact_list_response_model.dart';
+import 'package:frontend/feature/user_profile/data/request_model/update_profile_request_model.dart';
+import 'package:frontend/feature/user_profile/data/request_model/update_profile_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'api_service.g.dart';
@@ -17,8 +19,16 @@ abstract class ApiService {
   @GET('/user/profile')
   Future<UserResponseModel> getProfile();
 
+  @PUT('/users/{id}')
+  Future<UpdateProfileResponseModel> updateProfile(
+    @Body() UpdateProfileRequestModel? body,
+    @Path('id') String id,
+  );
+
   @POST('/contacts')
-  Future<ContactResponseModel> addContacts(@Body() AddContactRequestModel? body);
+  Future<ContactResponseModel> addContacts(
+    @Body() AddContactRequestModel? body,
+  );
 
   @GET('/contacts')
   Future<ContactListResponseModel> getAllContacts();
