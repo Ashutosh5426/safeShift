@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:frontend/core/app/app_provider.dart';
 import 'package:frontend/core/app/state/app_state.dart';
 import 'package:frontend/core/app/di/injections.dart';
+import 'package:frontend/core/routes/app_routes.dart';
+import 'package:frontend/core/routes/navigation_service.dart';
 import 'package:frontend/core/shared_preferences/local_storage.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -25,6 +27,9 @@ class SafeShiftApp extends StatelessWidget {
       child: MaterialApp(
         title: 'SafeShift',
         debugShowCheckedModeBanner: false,
+        initialRoute: AppRoutes.initialRoute,
+        onGenerateRoute: AppRoutes.generateRoute,
+        navigatorKey: NavigationService.navigatorKey,
         home: ChangeNotifierProvider.value(
           value: getIt<AppState>(),
           child: const AppProvider(),

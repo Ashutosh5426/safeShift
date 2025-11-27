@@ -18,12 +18,6 @@ class AppState extends ChangeNotifier {
   final String _serverClientId = dotenv.env['SERVERS_CLIENT_ID'] ?? '';
   final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
 
-  Future<void> logIn() async {
-    _loggedInState = LoggedState.loggedIn;
-    await LocalStorage.setBool(SHARED_PREFS_ISLOGGEDIN, true);
-    notifyListeners();
-  }
-
   LoggedState get loggedInState {
     final isLoggedIn = LocalStorage.getBool(SHARED_PREFS_ISLOGGEDIN) ?? false;
     _loggedInState = isLoggedIn ? LoggedState.loggedIn : LoggedState.loggedOut;
@@ -52,6 +46,13 @@ class AppState extends ChangeNotifier {
   String get serverClientId => _serverClientId;
 
   String get baseUrl => _baseUrl;
+
+  Future<void> logIn() async {
+    _loggedInState = LoggedState.loggedIn;
+    await LocalStorage.setBool(SHARED_PREFS_ISLOGGEDIN, true);
+    NavigationService.pushNamedAndRemoveUntil(AppRoutes.contactList);
+    notifyListeners();
+  }
 
   Future<void> logOut() async {
     _loggedInState = LoggedState.loggedOut;
