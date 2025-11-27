@@ -9,21 +9,36 @@ class ApiClient {
 
   static Dio getDio() {
     if (_dio != null) return _dio!;
-    final dio = Dio(BaseOptions(
-      baseUrl: getIt<AppState>().baseUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    ));
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: getIt<AppState>().baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        headers: {'Content-Type': 'application/json'},
+      ),
+    );
 
-    dio.interceptors.add(TokenInterceptor(onUnauthorized: () {
-      final appState = getIt<AppState>();
-      appState.logOut();
-    }));
+    dio.interceptors.add(
+      TokenInterceptor(
+        onUnauthorized: () {
+          final appState = getIt<AppState>();
+          appState.logOut();
+        },
+      ),
+    );
     dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
-
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onResponse: (response, handler) {
+          if (response.requestOptions.path.contains('/users/')) {
+            if (response.data is Map<String, dynamic>) {
+              response.data['status'] = response.statusCode;
+            }
+          }
+          handler.next(response);
+        },
+      ),
+    );
     _dio = dio;
     return dio;
   }

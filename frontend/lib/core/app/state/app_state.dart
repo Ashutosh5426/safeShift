@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/core/app/local_storage/local_storage.dart';
 import 'package:frontend/core/constants/constants.dart';
+import 'package:frontend/core/routes/app_routes.dart';
+import 'package:frontend/core/routes/navigation_service.dart';
+import 'package:frontend/core/shared_preferences/local_storage.dart';
 import 'package:frontend/core/shared_preferences/storage_constants.dart';
 import 'package:frontend/feature/authentication/data/models/user_response_model.dart';
 import 'package:frontend/feature/authentication/google_sign_in.dart';
@@ -41,6 +43,10 @@ class AppState extends ChangeNotifier {
   String get userPhoneNo =>
       LocalStorage.getString(StorageConstants.userPhoneNo) ?? '';
 
+  Future<bool> updateUserPhoneNo(String value) async {
+    return await LocalStorage.setString(StorageConstants.userPhoneNo, value);
+  }
+
   String get iosClientId => _iosClientId;
 
   String get serverClientId => _serverClientId;
@@ -51,7 +57,7 @@ class AppState extends ChangeNotifier {
     _loggedInState = LoggedState.loggedOut;
     AuthService.instance.signOut();
     await LocalStorage.clear(whiteList: []);
-
+    NavigationService.pushNamedAndRemoveUntil(AppRoutes.login);
     notifyListeners();
   }
 

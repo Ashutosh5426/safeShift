@@ -12,6 +12,7 @@ class CircularButton extends StatefulWidget {
   final Color buttonColor;
   final Color borderColor;
   final Future<void> Function()? onPressed;
+  final bool? isLoading;
 
   const CircularButton({
     this.imagePath,
@@ -23,6 +24,7 @@ class CircularButton extends StatefulWidget {
     this.buttonColor = AppColors.primaryBackgroundColor,
     this.borderColor = AppColors.primaryColor,
     this.onPressed,
+    this.isLoading,
     super.key,
   });
 
@@ -32,6 +34,12 @@ class CircularButton extends StatefulWidget {
 
 class _CircularButtonState extends State<CircularButton> {
   bool _isLoading = false;
+
+  @override
+  void didUpdateWidget(covariant CircularButton oldWidget) {
+    _isLoading = widget.isLoading ?? false;
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +72,13 @@ class _CircularButtonState extends State<CircularButton> {
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.primaryColor,
+                    AppColors.primaryColor == widget.buttonColor
+                        ? AppColors.white
+                        : AppColors.primaryColor,
                   ),
                 ),
               )
-            else if (widget.imagePath!=null)
+            else if (widget.imagePath != null)
               switch (widget.imageType) {
                 ImageType.image => Image.asset(widget.imagePath!, width: 24),
                 ImageType.svg => SvgPicture.asset(widget.imagePath!, width: 24),

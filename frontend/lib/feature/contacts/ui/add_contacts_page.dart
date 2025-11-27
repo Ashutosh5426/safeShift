@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/core/routes/navigation_service.dart';
 import 'package:frontend/feature/common/circular_button.dart';
 import 'package:frontend/feature/contacts/bloc/contacts_bloc.dart';
 import 'package:frontend/feature/contacts/bloc/contacts_event.dart';
@@ -36,7 +37,7 @@ class _AddContactsPageState extends State<AddContactsPage> {
       appBar: AppBar(
         leading: InkWell(
           child: Icon(Icons.arrow_back_ios_new, color: Colors.white),
-          onTap: () => Navigator.of(context).pop(),
+          onTap: () => NavigationService.pop(),
         ),
         title: const Text('Add Contact', style: TextStyle(color: Colors.white)),
         centerTitle: true,
