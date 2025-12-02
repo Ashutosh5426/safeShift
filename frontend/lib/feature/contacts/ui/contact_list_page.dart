@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/feature/common/common_toast.dart';
 import 'package:frontend/core/constants/colors.dart';
 import 'package:frontend/feature/common/app_drawer.dart';
 import 'package:frontend/feature/common/common_app_bar.dart';
@@ -58,28 +59,16 @@ class _ContactListPageState extends State<ContactListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryBackgroundColor,
-      appBar: CommonAppBar(
-        title: 'Contacts',
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu_rounded, color: AppColors.primaryColor),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
+      appBar: CommonAppBar(title: 'Contacts'),
       body: BlocListener<ContactsBloc, ContactsState>(
         bloc: _bloc,
         listener: (context, state) {
           if (state is DeleteContactSuccess) {
             /// After successful delete, refetch contacts
             _bloc.add(GetContactsEvent());
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Contact deleted')));
+            CommonToast.show(context, "Contact deleted");
           } else if (state is DeleteContactError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            CommonToast.show(context, state.message, isError: true);
           }
         },
         child: BlocBuilder<ContactsBloc, ContactsState>(
@@ -123,9 +112,7 @@ class _ContactListPageState extends State<ContactListPage> {
                       title: Text(contact.name),
                       subtitle: Text(contact.phone),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Tapped ${contact.name}')),
-                        );
+                        CommonToast.show(context, "Tapped ${contact.name}");
                       },
                     ),
                   );

@@ -9,12 +9,14 @@ import 'package:frontend/feature/user_profile/bloc/user_profile_bloc.dart';
 import 'package:frontend/feature/user_profile/data/repository/profile_repository.dart';
 import 'package:frontend/feature/user_profile/ui/user_profile_page.dart';
 import 'package:injectable/injectable.dart';
+import 'package:frontend/feature/safe_model/ui/home_page.dart';
 
 @singleton
 class AppRoutes {
   /// Define route names as constants
   static const String initialRoute = '/';
   static const String login = '/login';
+  static const String home = '/home';
   static const String contactList = '/contactList';
   static const String addContact = '/addContact';
   static const String userProfile = '/userProfile';
@@ -25,13 +27,15 @@ class AppRoutes {
       case initialRoute:
         return MaterialPageRoute(builder: (_) {
           if(getIt<AppState>().loggedInState == LoggedState.loggedIn) {
-            return ContactListPage();
+            return HomePage();
           } else {
             return LoginPage();
           }
         });
       case login:
         return MaterialPageRoute(builder: (_) => LoginPage());
+      case home:
+        return MaterialPageRoute(builder: (_) => HomePage());
       case contactList:
         return MaterialPageRoute(builder: (_) => ContactListPage());
       case addContact:

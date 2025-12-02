@@ -5,7 +5,7 @@ import 'package:frontend/core/constants/colors.dart';
 import 'package:frontend/core/routes/app_routes.dart';
 import 'package:frontend/core/routes/navigation_service.dart';
 import 'package:frontend/feature/common/common_network_image.dart';
-import 'package:frontend/feature/safe_model/ui/safe_mode_page.dart';
+import 'package:frontend/feature/contacts/ui/contact_list_page.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -37,7 +37,7 @@ class AppDrawer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       NavigationService.pushNamed(AppRoutes.userProfile);
                     },
                     child: Hero(
@@ -75,19 +75,47 @@ class AppDrawer extends StatelessWidget {
             ),
 
             ListTile(
-              leading: const Icon(Icons.contacts_outlined),
-              title: const Text('Contacts'),
+              leading: const Icon(Icons.home, color: AppColors.primaryColor),
+              title: const Text(
+                'Home',
+                style: TextStyle(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.person, color: AppColors.primaryColor),
+              title: const Text(
+                'Profile',
+                style: TextStyle(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               onTap: () {
-                NavigationService.pop();
+                NavigationService.pushNamed(AppRoutes.userProfile);
               },
             ),
 
             ListTile(
-              leading: const Icon(Icons.safety_check_rounded),
-              title: const Text('Safe Mode'),
+              leading: const Icon(
+                Icons.contacts,
+                color: AppColors.primaryColor,
+              ),
+              title: const Text(
+                'Contacts',
+                style: TextStyle(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => SafeModePage()));
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => ContactListPage()));
               },
             ),
 
@@ -96,6 +124,7 @@ class AppDrawer extends StatelessWidget {
             const Divider(thickness: 1),
 
             ListTile(
+              contentPadding: EdgeInsets.only(left: 20, bottom: 20),
               leading: const Icon(Icons.logout, color: Colors.redAccent),
               title: const Text(
                 'Logout',
