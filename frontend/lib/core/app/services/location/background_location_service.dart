@@ -4,10 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:frontend/core/app/services/location/geofence_detector.dart';
-import 'package:frontend/core/app/services/location/geofence_storage.dart';
 import 'package:frontend/core/app/services/location/stationary_detector.dart';
-import 'package:frontend/core/app/services/location/travel_monitor.dart';
 import 'package:geolocator/geolocator.dart';
 
 @pragma('vm:entry-point')
@@ -46,68 +43,16 @@ void onStart(ServiceInstance service) async {
     thirdAlertDuration: const Duration(minutes: 7),
   );
 
-  final geofenceDetector = GeofenceDetector();
-  final travelMonitor = TravelMonitor();
-
-  /// Load saved geofences on start
-  GeofenceStorage.loadGeofences().then((list) {
-    for (var g in list) {
-      geofenceDetector.addGeofence(g);
-    }
-  });
-
-  if (service is AndroidServiceInstance) {
-    service.on('reload_geofences').listen((event) async {
-      print("BackgroundService: Reloading geofences...");
-      geofenceDetector.clearGeofences();
-      final list = await GeofenceStorage.loadGeofences();
-      for (var g in list) {
-        geofenceDetector.addGeofence(g);
-      }
-    });
-
-    service.on('start_travel').listen((event) {
-      if (event != null && event['route'] != null) {
-        final List<dynamic> routeList = event['route'];
-        final List<Map<String, double>> route = routeList.map((p) {
-          return {
-            'lat': (p['lat'] as num).toDouble(),
-            'lng': (p['lng'] as num).toDouble(),
-          };
-        }).toList();
-        
-        travelMonitor.start(route);
-      }
-    });
-
-    service.on('stop_travel').listen((event) {
-      travelMonitor.stop();
-    });
-  }
-
   Geolocator.getPositionStream(
     locationSettings: const LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 0,
     ),
   ).listen((pos) {
-    /// Check for stationary
     bool shouldAlert = detector.check(pos);
 
     if (shouldAlert) {
       service.invoke("stationary_alert");
-    }
-
-    /// Check for geofence breach
-    bool isBreach = geofenceDetector.checkBreach(pos);
-    if (isBreach) {
-      service.invoke("geofence_alert");
-    }
-
-    /// Check for wrong direction
-    bool isWrongDirection = travelMonitor.check(pos);
-    if (isWrongDirection) {
-      service.invoke("travel_alert");
     }
 
     service.invoke("location_update", {

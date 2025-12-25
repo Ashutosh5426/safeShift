@@ -5,8 +5,7 @@ class NotificationService {
 
   static Future<void> init() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const darwin = DarwinInitializationSettings();
-    const settings = InitializationSettings(android: android, iOS: darwin);
+    const settings = InitializationSettings(android: android);
 
     await _plugin.initialize(settings);
   }
@@ -20,37 +19,6 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'stationary_channel',
           'Stationary Alerts',
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-      ),
-    );
-  }
-  static Future<void> showGeofenceAlert() async {
-    await _plugin.show(
-      2,
-      "Geofence Breach",
-      "You have left the safe zone!",
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'geofence_channel',
-          'Geofence Alerts',
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-      ),
-    );
-  }
-
-  static Future<void> showTravelAlert() async {
-    await _plugin.show(
-      3,
-      "Wrong Direction!",
-      "You seem to be moving away from your destination.",
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'travel_channel',
-          'Travel Alerts',
           importance: Importance.high,
           priority: Priority.high,
         ),
