@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
+  print("BackgroundService: onStart called!");
   /// Ensure plugin services are initialized
   DartPluginRegistrant.ensureInitialized();
 
@@ -38,21 +39,39 @@ void onStart(ServiceInstance service) async {
 
   final detector = StationaryDetector(
     radiusMeters: 50,
-    firstAlertDuration: const Duration(minutes: 5),
-    secondAlertDuration: const Duration(minutes: 6),
-    thirdAlertDuration: const Duration(minutes: 7),
+    level1Duration: const Duration(minutes: 2),
+    level2Duration: const Duration(minutes: 3),
+    level3Duration: const Duration(minutes: 4),
+    level4Duration: const Duration(minutes: 5),
   );
+
+  service.on('reset_stationary').listen((event) {
+    print("BackgroundService: Resetting stationary detector.");
+    detector.reset();
+  });
 
   Geolocator.getPositionStream(
     locationSettings: const LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 0,
     ),
-  ).listen((pos) {
-    bool shouldAlert = detector.check(pos);
+  ).listen((pos) async {
+    int alertLevel = detector.check(pos);
 
-    if (shouldAlert) {
-      service.invoke("stationary_alert");
+    if (alertLevel > 0) {
+      service.invoke("stationary_alert", {"level": alertLevel});
+      
+      if (alertLevel == 4) {
+        print("BackgroundService: Level 4 reached! Triggering SOS.");
+        // We need to trigger SOS. Since AlertService depends on UI/Plugins that might not work fully in background isolate
+        // without proper setup, we invoke the main isolate to handle it if possible, OR try to run it here.
+        // Best practice: Invoke main isolate to handle complex plugin interactions if UI is involved, 
+        // but for SMS/Call we might need to do it here or ensure AlertService works.
+        // However, 'url_launcher' might not work in background isolate on some platforms.
+        // Let's invoke the main UI to handle the actual SOS call/SMS if the app is alive.
+        // If the app is terminated, this background service is running headless.
+        // For now, we send the event. The main isolate (LocationManager) will listen and trigger AlertService.
+      }
     }
 
     service.invoke("location_update", {

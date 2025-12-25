@@ -65,6 +65,50 @@ class _HomePageState extends State<HomePage> {
     LocationManager().foregroundStream.listen((pos) {
       print("Foreground pos: ${pos.latitude}, ${pos.longitude}");
     });
+
+    // Listen for Stationary Alerts
+    LocationManager().stationaryAlertStream.listen((level) {
+      if (mounted && level > 0 && level < 4) {
+        _showStationaryDialog(level);
+      }
+    });
+  }
+
+  void _showStationaryDialog(int level) {
+    // Dismiss any existing dialogs if needed (optional, but good practice)
+    // For simplicity, we just show a new one. 
+    // In a real app, we might want to manage dialog state to avoid stacking.
+    
+    String title = "Safety Check";
+    String content = "You haven't moved for a while.";
+    
+    if (level == 1) {
+      content = "You've been stationary for 2 minutes. Are you okay?";
+    } else if (level == 2) {
+      content = "Still stationary. SOS will be sent in 2 minutes.";
+    } else if (level == 3) {
+      title = "URGENT";
+      content = "SOS will be sent in 1 minute! Please respond.";
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(title, style: const TextStyle(color: Colors.red)),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () {
+              LocationManager().resetStationary();
+              Navigator.pop(context);
+              CommonToast.show(context, "Safety Check Confirmed. Timer reset.", isError: false);
+            },
+            child: const Text("I'm Safe"),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _checkServiceStatus() async {
