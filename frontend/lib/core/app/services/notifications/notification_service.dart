@@ -1,4 +1,15 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+
+@pragma('vm:entry-point')
+void onNotificationAction(NotificationResponse details) {
+  print("NotificationService: onNotificationAction called with actionId: ${details.actionId}");
+  if (details.actionId == 'safe') {
+    print("NotificationService: 'I'm Safe' clicked. Resetting stationary detector.");
+    final service = FlutterBackgroundService();
+    service.invoke("reset_stationary");
+  }
+}
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
@@ -8,7 +19,11 @@ class NotificationService {
     const darwin = DarwinInitializationSettings();
     const settings = InitializationSettings(android: android, iOS: darwin);
 
-    await _plugin.initialize(settings);
+    await _plugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: onNotificationAction,
+      onDidReceiveBackgroundNotificationResponse: onNotificationAction,
+    );
   }
 
   static Future<void> showStationaryAlert(int level) async {
@@ -44,6 +59,14 @@ class NotificationService {
           'Stationary Alerts',
           importance: Importance.high,
           priority: Priority.high,
+          actions: [
+            AndroidNotificationAction(
+              'safe',
+              "I'm Safe",
+              showsUserInterface: true,
+              cancelNotification: true,
+            ),
+          ],
         ),
       ),
     );

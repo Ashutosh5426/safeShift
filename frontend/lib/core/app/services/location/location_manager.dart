@@ -76,6 +76,10 @@ class LocationManager {
   final StreamController<int> _stationaryAlertController = StreamController.broadcast();
   Stream<int> get stationaryAlertStream => _stationaryAlertController.stream;
 
+  // Stream for stationary reset acknowledgement
+  final _stationaryResetController = StreamController<void>.broadcast();
+  Stream<void> get stationaryResetStream => _stationaryResetController.stream;
+
   void registerBackgroundListeners() {
     final service = FlutterBackgroundService();
 
@@ -83,8 +87,8 @@ class LocationManager {
       if (data != null) {
         try {
           final pos = Position(
-            longitude: data['lng'],
-            latitude: data['lat'],
+            longitude: data['lng'] as double,
+            latitude: data['lat'] as double,
             timestamp: DateTime.parse(data['time']),
             accuracy: 0,
             altitude: 0,
@@ -102,7 +106,6 @@ class LocationManager {
     });
 
     service.on("stationary_alert").listen((data) {
-      print("STATIONARY ALERT RECEIVED: $data");
       if (data != null && data['level'] != null) {
         int level = data['level'];
         NotificationService.showStationaryAlert(level);

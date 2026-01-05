@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   List<LatLng> _routePoints = [];
   bool _isTravelMode = false;
   bool _isLoadingRoute = false;
+  bool _isDialogVisible = false;
 
   @override
   void initState() {
@@ -79,30 +80,29 @@ class _HomePageState extends State<HomePage> {
     // For simplicity, we just show a new one. 
     // In a real app, we might want to manage dialog state to avoid stacking.
     
-    String title = "Safety Check";
-    String content = "You haven't moved for a while.";
-    
-    if (level == 1) {
-      content = "You've been stationary for 2 minutes. Are you okay?";
-    } else if (level == 2) {
-      content = "Still stationary. SOS will be sent in 2 minutes.";
-    } else if (level == 3) {
-      title = "URGENT";
-      content = "SOS will be sent in 1 minute! Please respond.";
+    // If a dialog is already visible, close it first to show the new one (or update it)
+    if (_isDialogVisible && mounted) {
+      Navigator.of(context).pop();
+      _isDialogVisible = false;
     }
 
+    _isDialogVisible = true;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(title, style: const TextStyle(color: Colors.red)),
-        content: Text(content),
+        title: Text(level == 1 ? "Are you okay?" : "Safety Check (Level $level)"),
+        content: Text(
+          level == 1
+              ? "You've been stationary for a while."
+              : "Still stationary. SOS will be triggered soon!",
+        ),
         actions: [
           TextButton(
             onPressed: () {
               LocationManager().resetStationary();
-              Navigator.pop(context);
-              CommonToast.show(context, "Safety Check Confirmed. Timer reset.", isError: false);
+              Navigator.of(context).pop();
+              _isDialogVisible = false;
             },
             child: const Text("I'm Safe"),
           ),
