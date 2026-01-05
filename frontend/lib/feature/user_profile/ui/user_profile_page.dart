@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/feature/common/common_toast.dart';
 import 'package:frontend/core/app/di/injections.dart';
 import 'package:frontend/core/app/state/app_state.dart';
 import 'package:frontend/core/constants/colors.dart';
@@ -174,9 +175,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         listener: (context, state) {
                           if (state is UserProfileSuccess) {
                             _toggleEditMode();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('User info updated')),
-                            );
+                            CommonToast.show(context, "User info updated");
                           }
                         },
                         builder: (context, state) {

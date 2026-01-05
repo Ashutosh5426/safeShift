@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/feature/common/common_toast.dart';
 import 'package:frontend/core/routes/navigation_service.dart';
 import 'package:frontend/feature/common/circular_button.dart';
 import 'package:frontend/feature/contacts/bloc/contacts_bloc.dart';
@@ -47,14 +48,10 @@ class _AddContactsPageState extends State<AddContactsPage> {
         bloc: _bloc,
         listener: (context, state) {
           if (state is AddContactSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Contact added successfully')),
-            );
-            Navigator.of(context).pop(true);
+            CommonToast.show(context, "Contact added successfully");
+            Navigator.pop(context, true);
           } else if (state is AddContactError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            CommonToast.show(context, state.message, isError: true);
           }
         },
         child: Padding(
@@ -100,13 +97,7 @@ class _AddContactsPageState extends State<AddContactsPage> {
                       return; // ❌ Form not valid
                     }
                     if (_relationship == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Error: Relationship field can't be empty",
-                          ),
-                        ),
-                      );
+                      CommonToast.show(context, "Relationship field can't be empty", isError: true);
                       return;
                     }
                     _bloc.add(

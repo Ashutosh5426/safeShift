@@ -7,3 +7,5 @@ SafeShift – A Mobile Application for Ensuring Safety of Late-Night Employees
 * Use toast instead of snackbar
 * Remove hardcoded strings from everywhere
 * Confirm user user if he/she's safe or not
+* Backend Integration for Stationary Alerts
+* PiP Mode on Location Tracking

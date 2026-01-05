@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/core/routes/app_routes.dart';
+import 'package:frontend/feature/common/common_toast.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/core/constants/colors.dart';
 import 'package:frontend/core/constants/images.dart';
@@ -32,13 +34,10 @@ class LoginPage extends StatelessWidget {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is Authenticated) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Welcome ${state.user.name}')),
-                  );
+                  CommonToast.show(context, "Welcome ${state.user.name}");
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
                 } else if (state is AuthError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: ${state.message}')),
-                  );
+                  CommonToast.show(context, "Error: ${state.message}", isError: true);
                 }
               },
               builder: (context, state) {

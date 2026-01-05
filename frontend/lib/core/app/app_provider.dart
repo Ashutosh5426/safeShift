@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/feature/safe_model/ui/home_page.dart';
 import 'package:frontend/core/app/di/injections.dart';
 import 'package:frontend/core/app/state/app_state.dart';
 import 'package:frontend/core/routes/app_routes.dart';
@@ -17,7 +18,7 @@ class _AppProviderState extends State<AppProvider> {
     return Consumer<AppState>(
       builder: (context, _, __) =>
           getIt<AppState>().loggedInState == LoggedState.loggedIn
-          ? AppRoutes.contactListScreen()
+          ? HomePage()
           : AppRoutes.loginScreen(),
     );
   }

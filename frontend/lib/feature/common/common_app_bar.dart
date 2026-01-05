@@ -8,6 +8,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final Widget? leading;
   final VoidCallback? onBackPressed;
+  final Color backgroundColor;
 
   const CommonAppBar({
     super.key,
@@ -16,6 +17,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.onBackPressed,
     this.actions,
+    this.backgroundColor = AppColors.primaryBackgroundColor,
   });
 
   @override
@@ -25,7 +27,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      backgroundColor: AppColors.primaryBackgroundColor,
+      backgroundColor: backgroundColor,
       automaticallyImplyLeading: false,
       leading:
           leading ??

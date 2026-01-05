@@ -60,5 +60,22 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+        <key>GoogleMapsAPIKey</key>
+        <string>$(GOOGLE_MAPS_API_KEY)</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+        <string>This app requires your location.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>This app needs background location access.</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>This app tracks your movement even in the background.</string>
+        <key>UIBackgroundModes</key>
+        <array>
+          <string>location</string>
+        </array>
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+          <string>sms</string>
+          <string>tel</string>
+        </array>
 	</dict>
 </plist>

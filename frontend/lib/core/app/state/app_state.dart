@@ -50,7 +50,7 @@ class AppState extends ChangeNotifier {
   Future<void> logIn() async {
     _loggedInState = LoggedState.loggedIn;
     await LocalStorage.setBool(SHARED_PREFS_ISLOGGEDIN, true);
-    NavigationService.pushNamedAndRemoveUntil(AppRoutes.contactList);
+    NavigationService.pushNamedAndRemoveUntil(AppRoutes.home);
     notifyListeners();
   }
 
