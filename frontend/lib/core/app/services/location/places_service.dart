@@ -1,10 +1,11 @@
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart' as places;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dio/dio.dart';
 
 class PlacesService {
   // Replace with your actual API Key
-  static const String _apiKey = "AIzaSyBnMsdnzFmec_ey_-fHqkM6ywXv7VfaHbE"; 
+   final String _apiKey = dotenv.env['PLACES_API_KEY'] ?? '';
   late final places.FlutterGooglePlacesSdk _places;
 
   PlacesService() {
