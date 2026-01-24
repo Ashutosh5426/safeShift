@@ -739,19 +739,19 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.security, color: Colors.blueGrey),
-                title: const Text("Geofencing"),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    parentContext,
-                    MaterialPageRoute(
-                      builder: (context) => const GeofenceScreen(),
-                    ),
-                  );
-                },
-              ),
+              // ListTile(
+              //   leading: const Icon(Icons.security, color: Colors.blueGrey),
+              //   title: const Text("Geofencing"),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     Navigator.push(
+              //       parentContext,
+              //       MaterialPageRoute(
+              //         builder: (context) => const GeofenceScreen(),
+              //       ),
+              //     );
+              //   },
+              // ),
             ],
           ),
         );

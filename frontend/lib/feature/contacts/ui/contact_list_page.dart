@@ -112,7 +112,7 @@ class _ContactListPageState extends State<ContactListPage> {
                       title: Text(contact.name),
                       subtitle: Text(contact.phone),
                       onTap: () {
-                        CommonToast.show(context, "Tapped ${contact.name}");
+                        // CommonToast.show(context, "Tapped ${contact.name}");
                       },
                     ),
                   );

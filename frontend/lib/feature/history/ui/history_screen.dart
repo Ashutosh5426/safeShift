@@ -51,7 +51,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       subtitle: Text(
                         "${DateFormat.yMMMd().add_jm().format(trip.startTime)}",
                       ),
-                      trailing: const Icon(Icons.chevron_right),
+                      // trailing: const Icon(Icons.chevron_right),
                     );
                   },
                 ),
