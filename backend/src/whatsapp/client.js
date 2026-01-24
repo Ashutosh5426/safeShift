@@ -8,7 +8,15 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-gpu'
+        ]
     }
 });
 
@@ -49,7 +57,9 @@ client.on('disconnected', (reason) => {
 
 export const initializeWhatsApp = () => {
     console.log('Initializing WhatsApp Client...');
-    client.initialize();
+    client.initialize().catch(err => {
+        console.error('FAILED TO INITIALIZE WHATSAPP CLIENT:', err.message);
+    });
 };
 
 const cleanup = async () => {

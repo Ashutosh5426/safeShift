@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:frontend/core/app/services/location/location_repository.dart';
 import 'package:frontend/feature/contacts/data/repository/contacts_repository.dart';
+import 'package:frontend/core/api/api_client.dart';
 
 class AlertService {
   final ContactsRepository _contactsRepository = ContactsRepository();
@@ -63,10 +64,12 @@ class AlertService {
   /// Sends an SOS message via WhatsApp Backend API
   Future<String> sendWhatsAppSOS() async {
     try {
+      // 1. Get Location
       final pos = await locationRepository.getLastLocation();
       final lat = pos.lat;
       final lng = pos.lng;
       
+      // 2. Get Contacts
       final contacts = await _contactsRepository.getAllContacts();
       if (contacts.isEmpty) {
         return "No contacts found";
@@ -75,13 +78,11 @@ class AlertService {
       final numbers = contacts.map((c) => c.phone).toList();
       final googleMapsLink = "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
       final message = "SOS! I have been stationary for too long and may be in danger.\n\nLocation: $googleMapsLink";
-
-      // Use 10.0.2.2 for Android Emulator, localhost for iOS/Web
-      final baseUrl = Platform.isAndroid ? "http://10.0.2.2:3000" : "http://localhost:3000";
       
-      final dio = Dio();
+      // 3. Send Request using ApiClient (handles baseUrl and headers)
+      final dio = ApiClient.getDio();
       final response = await dio.post(
-        "$baseUrl/api/whatsapp/send-sos",
+        "/api/whatsapp/send-sos",
         data: {
           "numbers": numbers,
           "message": message,
