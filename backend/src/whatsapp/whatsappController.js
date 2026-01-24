@@ -35,7 +35,6 @@ export const getQrCode = (req, res) => {
     }
 
     res.send(htmlContent(null, `${status} - QR code not yet available, please wait...`));
-    res.send(htmlContent(null, `${status} - QR code not yet available, please wait...`));
 };
 
 export const getQrData = (req, res) => {
