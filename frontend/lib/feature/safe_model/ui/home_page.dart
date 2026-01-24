@@ -27,7 +27,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final controller = LiveMapController();
   bool mapReady = false;
   bool isSafeMode = false;
@@ -42,16 +42,26 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initLocationServices();
     
     // Listen for location updates to update camera and marker
     _locationSubscription = locationRepository.stream.listen((pos) {
-      if (mounted && mapReady) {
-        controller.updateUserMarker(pos);
-        controller.moveCamera(pos);
-        setState(() {}); // Trigger rebuild to show updated marker
+      if (mounted) {
+        if (mapReady) {
+          controller.updateUserMarker(pos);
+          controller.moveCamera(pos);
+        }
+        setState(() {}); // Trigger rebuild to show updated marker or switch view
       }
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _initLocationServices();
+    }
   }
 
   Future<void> _initLocationServices() async {
@@ -309,6 +319,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     print("MapScreen: dispose called");
+    WidgetsBinding.instance.removeObserver(this);
     _locationSubscription?.cancel();
     LocationManager().stopForegroundTracking();
     LocationManager().stopBackgroundTracking();

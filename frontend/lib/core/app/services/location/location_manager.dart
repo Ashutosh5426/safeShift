@@ -134,6 +134,13 @@ class LocationManager {
     service.on("travel_alert").listen((_) {
       print("TRAVEL ALERT RECEIVED");
       NotificationService.showTravelAlert();
+      
+      // Trigger SOS for Travel Alert
+      print("LocationManager: Triggering SOS for Travel Alert!");
+       Future.delayed(const Duration(seconds: 1), () async {
+         final result = await AlertService().sendWhatsAppSOS();
+         print("LocationManager Travel SOS Result: $result");
+       });
     });
   }
 

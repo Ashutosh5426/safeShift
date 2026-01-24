@@ -10,6 +10,8 @@ import 'package:frontend/core/app/state/app_state.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:frontend/core/app/di/injections.dart'; 
+import 'package:frontend/core/shared_preferences/local_storage.dart';
+import 'package:frontend/core/app/services/location/travel_monitor.dart';
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
@@ -74,30 +76,59 @@ void onStart(ServiceInstance service) async {
     level4Duration: const Duration(seconds: 75),
   );
 
-  bool _isStationaryDetectionActive = true;
-  bool _isSosTriggered = false;
+  final travelMonitor = TravelMonitor();
 
-  service.on('reset_stationary').listen((event) {
+  bool _isStationaryDetectionActive = true;
+  // bool _isSosTriggered = false; // Removed in favor of LocalStorage
+
+  service.on('reset_stationary').listen((event) async {
     print("BackgroundService: Resetting stationary detector.");
     detector.reset();
     _isStationaryDetectionActive = true;
     print("BackgroundService: Stationary detection RESUMED.");
     
-    // Trigger "I am Safe" message ONLY if SOS was previously triggered
-    if (_isSosTriggered) {
+    // Trigger "I am Safe" message ONLY if SOS was previously triggered (checked via LocalStorage)
+    bool isSosTriggered = LocalStorage.getBool('isSosTriggered') ?? false;
+    
+    if (isSosTriggered) {
         AlertService().sendWhatsAppSafeMessage().then((result) {
-        print("BackgroundService: Safe message result: $result");
+            print("BackgroundService: Safe message result: $result");
         });
-        _isSosTriggered = false; // Reset flag after sending message
+        await LocalStorage.setBool('isSosTriggered', false); // Reset flag after sending message
     } else {
-        print("BackgroundService: SOS was not triggered, skipping Safe Message.");
+        print("BackgroundService: SOS was not triggered (LocalStorage), skipping Safe Message.");
     }
   });
 
   Position? lastKnownPosition;
 
+  service.on('start_travel').listen((event) {
+    print("BackgroundService: start_travel received.");
+    if (event != null && event['route'] != null) {
+      try {
+        List<dynamic> rawRoute = event['route'];
+        List<Map<String, double>> route = rawRoute.map((p) {
+          return {
+            'lat': (p['lat'] as num).toDouble(),
+            'lng': (p['lng'] as num).toDouble(),
+          };
+        }).toList();
+        
+        travelMonitor.start(route);
+        print("BackgroundService: Travel monitoring STARTED.");
+      } catch (e) {
+        print("BackgroundService: Error starting travel monitor: $e");
+      }
+    }
+  });
+
+  service.on('stop_travel').listen((event) {
+    print("BackgroundService: stop_travel received.");
+    travelMonitor.stop();
+  });
+
   // Periodic check to trigger alerts even if GPS is silent (stationary)
-  Timer.periodic(const Duration(seconds: 5), (timer) {
+  Timer.periodic(const Duration(seconds: 5), (timer) async {
     if (!_isStationaryDetectionActive) return;
 
     if (lastKnownPosition != null) {
@@ -108,7 +139,7 @@ void onStart(ServiceInstance service) async {
         if (alertLevel == 4) {
           print("BackgroundService (Timer): Level 4 reached! Triggering SOS.");
           _isStationaryDetectionActive = false;
-          _isSosTriggered = true;
+          await LocalStorage.setBool('isSosTriggered', true);
           print("BackgroundService: Stationary detection PAUSED until reset.");
         }
       }
@@ -132,7 +163,7 @@ void onStart(ServiceInstance service) async {
         if (alertLevel == 4) {
           print("BackgroundService: Level 4 reached! Triggering SOS.");
           _isStationaryDetectionActive = false;
-          _isSosTriggered = true;
+          await LocalStorage.setBool('isSosTriggered', true);
           print("BackgroundService: Stationary detection PAUSED until reset.");
           // We need to trigger SOS. Since AlertService depends on UI/Plugins that might not work fully in background isolate
           // without proper setup, we invoke the main isolate to handle it if possible, OR try to run it here.
@@ -143,6 +174,16 @@ void onStart(ServiceInstance service) async {
           // If the app is terminated, this background service is running headless.
           // For now, we send the event. The main isolate (LocationManager) will listen and trigger AlertService.
         }
+      }
+    }
+
+    // Travel Monitoring Check
+    if (travelMonitor.isActive) {
+      if (travelMonitor.check(pos)) {
+        print("BackgroundService: Travel Deviation Triggered!");
+        service.invoke("travel_alert");
+        // Mark SOS as triggered so "I'm Safe" works
+        await LocalStorage.setBool('isSosTriggered', true);
       }
     }
 
