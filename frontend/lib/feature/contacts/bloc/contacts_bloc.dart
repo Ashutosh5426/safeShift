@@ -19,6 +19,13 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   ) async {
     emit(AddContactLoading());
     try {
+      // Check existing contacts count
+      final existingContacts = await _contactsRepository.getAllContacts();
+      if (existingContacts.length >= 5) {
+        emit(AddContactError('You cannot add more than 5 contacts.'));
+        return;
+      }
+
       final contact = await _contactsRepository.addContacts(
         AddContactRequestModel(
           name: event.name,

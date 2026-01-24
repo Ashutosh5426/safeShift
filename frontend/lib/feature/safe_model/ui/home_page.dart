@@ -19,6 +19,7 @@ import 'geofence_screen.dart';
 import 'map_controller.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:frontend/core/app/services/alert_service.dart';
+import 'package:frontend/core/shared_preferences/local_storage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -65,11 +66,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> _initLocationServices() async {
-    // Force stop background service on app launch (Safe Mode OFF by default)
-    await LocationManager().stopBackgroundTracking();
-    if (mounted) {
-      setState(() => isSafeMode = false);
-    }
+    // Check current service status instead of forcing stop
+    await _checkServiceStatus();
 
     LocationManager().startForegroundTracking();
 
@@ -79,7 +77,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     // Listen for Stationary Alerts
     LocationManager().stationaryAlertStream.listen((level) {
-      if (mounted && level > 0 && level < 4) {
+      if (mounted && level > 0 && level <= 4) {
         _showStationaryDialog(level);
       }
     });
