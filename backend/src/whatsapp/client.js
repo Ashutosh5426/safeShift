@@ -69,6 +69,11 @@ export const initializeWhatsApp = () => {
     console.log('Initializing WhatsApp Client...');
     client.initialize().catch(err => {
         console.error('FAILED TO INITIALIZE WHATSAPP CLIENT:', err.message);
+        // Retry initialization after 10 seconds if it fails (e.g. Chrome crash)
+        setTimeout(() => {
+            console.log('Retrying WhatsApp initialization...');
+            initializeWhatsApp();
+        }, 10000);
     });
 };
 
