@@ -115,8 +115,13 @@ class LocationManager {
            // Trigger SOS
            print("LocationManager: Triggering SOS!");
            // We use a slight delay to ensure the notification is shown first
-           Future.delayed(const Duration(seconds: 1), () {
-             AlertService().sendSOS();
+           Future.delayed(const Duration(seconds: 1), () async {
+             // Use the new WhatsApp SOS method
+             final result = await AlertService().sendWhatsAppSOS();
+             print("LocationManager SOS Result: $result");
+             
+             // Optional: Also trigger the local SMS SOS as a fallback or parallel action
+             // AlertService().sendSOS(); 
            });
         }
       }

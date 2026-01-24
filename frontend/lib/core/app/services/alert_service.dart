@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:frontend/core/app/services/location/location_repository.dart';
@@ -56,6 +57,45 @@ class AlertService {
     } catch (e) {
       print("SOS Error: $e");
       return "Failed to send SOS: $e";
+    }
+  }
+
+  /// Sends an SOS message via WhatsApp Backend API
+  Future<String> sendWhatsAppSOS() async {
+    try {
+      final pos = await locationRepository.getLastLocation();
+      final lat = pos.lat;
+      final lng = pos.lng;
+      
+      final contacts = await _contactsRepository.getAllContacts();
+      if (contacts.isEmpty) {
+        return "No contacts found";
+      }
+
+      final numbers = contacts.map((c) => c.phone).toList();
+      final googleMapsLink = "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
+      final message = "SOS! I have been stationary for too long and may be in danger.\n\nLocation: $googleMapsLink";
+
+      // Use 10.0.2.2 for Android Emulator, localhost for iOS/Web
+      final baseUrl = Platform.isAndroid ? "http://10.0.2.2:3000" : "http://localhost:3000";
+      
+      final dio = Dio();
+      final response = await dio.post(
+        "$baseUrl/api/whatsapp/send-sos",
+        data: {
+          "numbers": numbers,
+          "message": message,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return "WhatsApp SOS Sent";
+      } else {
+        return "Failed to send WhatsApp SOS: ${response.statusCode}";
+      }
+    } catch (e) {
+      print("WhatsApp SOS Error: $e");
+      return "Error sending WhatsApp SOS: $e";
     }
   }
 
