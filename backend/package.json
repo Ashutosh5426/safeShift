@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "share": "ngrok http 3000",
     "postinstall": "npx puppeteer browsers install chrome"
   },
   "keywords": [],
@@ -20,12 +21,13 @@
     "express": "^5.1.0",
     "google-auth-library": "^10.5.0",
     "jsonwebtoken": "^9.0.2",
-    "sqlite3": "^5.1.7",
-    "whatsapp-web.js": "^1.23.0",
+    "puppeteer": "^24.0.0",
     "qrcode": "^1.5.3",
-    "puppeteer": "^24.0.0"
+    "sqlite3": "^5.1.7",
+    "whatsapp-web.js": "github:pedroslopez/whatsapp-web.js#main"
   },
   "devDependencies": {
+    "ngrok": "^5.0.0-beta.2",
     "nodemon": "^3.1.10"
   }
 }

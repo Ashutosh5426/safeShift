@@ -33,15 +33,15 @@ class NotificationService {
     switch (level) {
       case 1:
         title = "Are you okay?";
-        body = "You've been stationary for 2 minutes.";
+        body = "You've been stationary for 30 seconds.";
         break;
       case 2:
         title = "Safety Check";
-        body = "Still stationary. SOS will be sent in 2 minutes.";
+        body = "Still stationary. SOS will be sent in 30 seconds.";
         break;
       case 3:
         title = "Urgent Safety Check";
-        body = "SOS will be sent in 1 minute! Please respond.";
+        body = "SOS will be sent in 15 seconds! Please respond.";
         break;
       case 4:
         title = "SOS Triggered";

@@ -15,7 +15,8 @@ const client = new Client({
             '--disable-accelerated-2d-canvas',
             '--no-first-run',
             '--no-zygote',
-            '--single-process',
+            '--no-zygote',
+            // '--single-process', // Causing instability?
             '--disable-gpu',
             '--disable-extensions',
             '--disable-component-extensions-with-background-pages',
@@ -95,6 +96,12 @@ process.on('SIGINT', async () => {
 process.on('SIGTERM', async () => {
     await cleanup();
     process.exit(0);
+});
+
+// Nodemon restart signal
+process.on('SIGUSR2', async () => {
+    await cleanup();
+    process.kill(process.pid, 'SIGUSR2');
 });
 
 export const getQr = () => qrCodeData;

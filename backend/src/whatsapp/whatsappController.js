@@ -78,10 +78,12 @@ export const sendMessage = async (req, res) => {
         try {
             // Append @c.us if not present for standard numbers.
             // Check if number is valid (simple check)
-            const sanitizedNumber = number.replace(/\D/g, '');
-            // Warning: This simple sanitization assumes cleaner input. 
-            // Ideally we should use a library or more robust checks, but for now this suffices.
-            // whatsapp-web.js expects '1234567890@c.us'
+            let sanitizedNumber = number.replace(/\D/g, '');
+
+            // Automatically add 91 country code if missing (common in India)
+            if (sanitizedNumber.length === 10) {
+                sanitizedNumber = '91' + sanitizedNumber;
+            }
 
             const chatId = sanitizedNumber.includes('@c.us') ? sanitizedNumber : `${sanitizedNumber}@c.us`;
 

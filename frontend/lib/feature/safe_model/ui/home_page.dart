@@ -732,7 +732,7 @@ class _HomePageState extends State<HomePage> {
                   // Use parentContext for Toast since 'context' (sheet) is deactivated
                   CommonToast.show(parentContext, "Sending SOS...", isError: false);
                   
-                  final result = await AlertService().sendSOS();
+                  final result = await AlertService().sendWhatsAppSOS();
                   
                   if (mounted) {
                      CommonToast.show(parentContext, "SOS Status: $result", isError: false);
