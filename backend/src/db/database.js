@@ -45,7 +45,7 @@ function initializeTables() {
       console.error("❌ Error creating contacts table:", err);
       return;
     }
-    
+
     // Function to create unique index
     const createUniqueIndex = () => {
       // First, try to drop the index if it exists (in case it's in a broken state)
@@ -53,7 +53,7 @@ function initializeTables() {
         // Ignore drop errors - index might not exist
         // Now create the unique index
         db.run(`
-          CREATE UNIQUE INDEX idx_contacts_user_phone 
+          CREATE UNIQUE INDEX idx_contacts_user_phone
           ON contacts(userId, phone)
         `, (indexErr) => {
           if (indexErr) {
@@ -88,7 +88,7 @@ function initializeTables() {
       // Delete duplicates for each userId+phone combination, keeping the highest id
       let deletedCount = 0;
       let processed = 0;
-      
+
       duplicates.forEach((dup) => {
         db.run(`
           DELETE FROM contacts
@@ -99,7 +99,7 @@ function initializeTables() {
           } else {
             deletedCount += this.changes;
           }
-          
+
           processed++;
           if (processed === duplicates.length) {
             if (deletedCount > 0) {
