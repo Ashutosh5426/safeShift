@@ -35,6 +35,25 @@ export const getQrCode = (req, res) => {
     }
 
     res.send(htmlContent(null, `${status} - QR code not yet available, please wait...`));
+    res.send(htmlContent(null, `${status} - QR code not yet available, please wait...`));
+};
+
+export const getQrData = (req, res) => {
+    const qr = getQr();
+    const status = getStatus();
+
+    if (status === 'CONNECTED') {
+        return res.status(200).json({ status: 'CONNECTED', qr: null });
+    }
+
+    // Return the Data URL (e.g., "data:image/png;base64,....")
+    // This allows the frontend to strip the prefix and decode base64 if needed, 
+    // or use it directly in an Image.network or similar web view.
+    if (qr) {
+        return res.status(200).json({ status, qr });
+    }
+
+    res.status(200).json({ status, qr: null });
 };
 
 export const sendMessage = async (req, res) => {
